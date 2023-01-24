@@ -5,6 +5,8 @@ from datetime import timedelta
 from django.contrib.sessions.models import Session
 
 def get_filepath(instance, filename):
+    print(instance.user)
+    print(instance._meta.db_table.split('_'))
     path = 'user_{0}/{1}'.format(instance.user.username, filename)
     return path
 
