@@ -1,8 +1,15 @@
 import threading
-from rest_framework import status
-from rest_framework.renderers import JSONRenderer
-from rest_framework.response import Response
+from django.shortcuts import render
 from django.contrib.auth import logout
+from datetime import datetime, timedelta
+from django.conf import settings
+from .models import LoginLogout, UserSessionModel
+from rest_framework.response import Response
+from django.contrib.sessions.models import Session
+from rest_framework.renderers import TemplateHTMLRenderer
+
+
+
 
 request_local = threading.local()
 request_branch = threading.local()
@@ -19,29 +26,21 @@ class RequestMiddleware():
         self.get_response = get_response
 
     def __call__(self, request):
-        try:
-            if request.user.is_authenticated:
-                if request.session.has_key('last_login'):
-                    print("alkdj")
-            else:
-                response = Response(
-                                        {"detail": "This action is not authorized"},
-                                        content_type="application/json",
-                                        status=status.HTTP_401_UNAUTHORIZED,
-                                    )
-                response.accepted_renderer = JSONRenderer()
-                response.accepted_media_type = "application/json"
-                response.renderer_context = {}
-                return response()
-        except:
-            pass
-        return self.get_response(request)
+        response = self.get_response(request)
 
-    def process_exception(self, request, exception):
-        request_local.request = None
-        request_branch.request = None
-
-    def process_template_response(self, request, response):
-        request_local.request = None
-        request_branch.request = None
+        # if isfunction(response, render):
+        #     print("hello")
+        
+        if isinstance(response, Response):
+            
+            response.data['new_data'] = "Girish Parate is logged in"
+            response._is_rendered = False 
+            response.render()
+            print((response.data))
+      
         return response
+
+    # def process_template_response(self, request, response):
+    #    if hasattr(response, 'data'): 
+    #       response.data['detail'] = 'bla-bla-bla'
+    #    return response

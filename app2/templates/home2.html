@@ -1,19 +1,14 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home 1 from app1</title>
-</head>
-<body>
+{% extends 'sperentes/base.html' %}
+{%block content%}
     <h3>Home 1 here for render</h3>
+
     <div>
-        <form action="" method="POST">
+        <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            Start time <input type="time" name="start_time"><br>
-            End time <input type="time" name="end_time"><br>
+            <input type="file" name="image">
             <button>Submit</button>
         </form>
+        {{hello}}
+        {{new_data}}
     </div>
-</body>
-</html>
+{%endblock content%}

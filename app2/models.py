@@ -4,18 +4,16 @@ from django.contrib.auth.models import User
 from datetime import timedelta
 from django.contrib.sessions.models import Session
 
+def get_filepath(instance, filename):
+    path = 'user_{0}/{1}'.format(instance.user.username, filename)
+    return path
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    start_time = models.TimeField(null=True)
-    end_time = models.TimeField(null=True)
-    duration = models.DurationField(default=timedelta)
-    half_day = models.DurationField(null=True)
-    buffer_time_login = models.DurationField(null=True)
-    buffer_time_logout = models.DurationField(null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.FileField(upload_to=get_filepath)
 
     def __str__(self) -> str:
-        return str(self.start_time)
+        return str(self.user)
 
 # Create your models here.
 class Ticket(models.Model):
@@ -49,3 +47,9 @@ class LoginLogout(models.Model):
     session_key = models.TextField()
 
 
+class Data(models.Model):
+    name = models.CharField(max_length=20, null=True)
+    data = models.TextField()
+
+    def __str__(self):
+        return self.name
